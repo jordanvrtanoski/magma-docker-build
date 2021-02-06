@@ -64,9 +64,9 @@ docker run --rm -t arm64v8/ubuntu uname -m # Testing the emulation environment
 > Following is example of the `uname -a` output from a docker container emulated
 >
 >```
-$ docker run -ti --rm arm64v8/debian:9.11 /bin/bash
-root@50a1e53658a8:/# uname -a
-Linux 50a1e53658a8 4.19.121-linuxkit #1 SMP Tue Dec 1 17:50:32 UTC 2020 aarch64 GNU/Linux
+>$ docker run -ti --rm arm64v8/debian:9.11 /bin/bash
+>root@50a1e53658a8:/# uname -a
+>Linux 50a1e53658a8 4.19.121-linuxkit #1 SMP Tue Dec 1 17:50:32 UTC 2020 aarch64 GNU/Linux
 >```
 
 
