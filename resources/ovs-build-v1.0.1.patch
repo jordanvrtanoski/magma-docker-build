@@ -1,0 +1,117 @@
+diff --git a/lte/gateway/release/build-ovs.sh b/lte/gateway/release/build-ovs.sh
+index 7ffbbdac1..aaef585e9 100644
+--- a/lte/gateway/release/build-ovs.sh
++++ b/lte/gateway/release/build-ovs.sh
+@@ -38,12 +38,14 @@ set -e
+ WORK_DIR=~/build-ovs
+ OVS_VERSION="v2.8.1"
+ OVS_VERSION_SHORT="2.8.1"
+-MAGMA_ROOT="../../../"
++#MAGMA_ROOT="../../../"
+ GTP_PATCH_PATH="${MAGMA_ROOT}/third_party/gtp_ovs"
+ # Build time dependencies
+ BUILD_DEPS="graphviz debhelper dh-autoreconf python-all python-twisted-conch module-assistant git ruby-dev openssl pkg-config libssl-dev build-essential"
+ PATCHES="$(ls ${GTP_PATCH_PATH}/ovs/${OVS_VERSION_SHORT})"
+ FLOWBASED_PATH="$(readlink -f ${GTP_PATCH_PATH}/gtp-v4.9-backport)"
++KVERS="4.9.0-9-$ARCH"
++KARCH="aarch64"
+ 
+ # The resulting package is placed in $OUTPUT_DIR
+ # or in the cwd.
+@@ -68,7 +70,7 @@ sudo apt-get update
+ # install build time dependency
+ sudo apt-get install  ${BUILD_DEPS} -y
+ # make surew correct linux headers are installed
+-sudo apt-get -y install "linux-headers-$(uname -r)"
++sudo apt-get -y install "linux-headers-$KVERS"
+ # Install fpm
+ sudo gem install fpm
+ 
+@@ -83,15 +85,14 @@ git apply ${PATCHES}
+ 
+ ./boot.sh
+ # Building OVS user packages
+-opts="--with-linux=/lib/modules/$(uname -r)/build"
++opts="--with-linux=/lib/modules/$KVERS/build KARCH=$KARCH"
+ deb_opts="nocheck parallel=$(nproc)"
+ fakeroot make -f debian/rules DATAPATH_CONFIGURE_OPTS="$opts" DEB_BUILD_OPTIONS="$deb_opts" binary
+ 
+ ## Building OVS datapath kernel module package
+ cd ${WORK_DIR}/ovs
+ sudo mkdir -p /usr/src/linux
+-kvers=$(uname -r)
+-ksrc="/lib/modules/$kvers/build"
+-sudo make -f debian/rules.modules KSRC="$ksrc" KVERS="$kvers" binary-modules
++ksrc="/lib/modules/$KVERS/build"
++sudo -E make -f debian/rules.modules KSRC="$ksrc" KVERS="$KVERS" binary-modules
+ 
+ cp /usr/src/*.deb ${WORK_DIR}
+diff --git a/third_party/gtp_ovs/gtp-v4.9-backport/Makefile b/third_party/gtp_ovs/gtp-v4.9-backport/Makefile
+index 30912f927..fd6cd0847 100755
+--- a/third_party/gtp_ovs/gtp-v4.9-backport/Makefile
++++ b/third_party/gtp_ovs/gtp-v4.9-backport/Makefile
+@@ -2,7 +2,13 @@ PKGNAME=oai-gtp
+ VERSION=4.9
+ ITERATION=5
+ 
+-ARCH=amd64
++ifndef ARCH
++ARCH:=amd64
++endif
++ifndef KVERS
++KVERS:=`uname -r`
++endif
++
+ PKGFMT=deb
+ WORK_DIR=/tmp/build-${PKGNAME}
+ PKGFILE=${PKGNAME}_${VERSION}-${ITERATION}_${ARCH}.${PKGFMT}
+@@ -15,10 +21,10 @@ OUTPUT_PATH=${OUTPUT_DIR}/${PKGFILE}
+ obj-m += gtp.o
+ 
+ build:
+-	make -C /lib/modules/`uname -r`/build M=$(PWD) modules
++	make -C /lib/modules/$(KVERS)/build M=$(PWD) modules
+ 	
+ modules_install: build
+-	make -C /lib/modules/`uname -r`/build M=$(PWD) modules_install
++	make -C /lib/modules//$(KVERS)/build M=$(PWD) modules_install
+ 	mkdir -p ${DEPMOD_CONFIG_DIR}
+ 	echo "override gtp.ko * extra" >> ${DEPMOD_CONFIG_FILE}
+ 	echo "override gtp.ko * weak-updates" >> ${DEPMOD_CONFIG_FILE}
+@@ -27,7 +33,7 @@ modules_install: build
+ package: build 
+ 	rm -rf ${WORK_DIR}
+ 	mkdir ${WORK_DIR}
+-	make INSTALL_MOD_PATH=${WORK_DIR} -C /lib/modules/`uname -r`/build M=$(PWD) modules_install
++	make INSTALL_MOD_PATH=${WORK_DIR} -C /lib/modules//$(KVERS)/build M=$(PWD) modules_install
+ 	fpm \
+ 	    -f \
+ 	    -s dir \
+@@ -45,4 +51,4 @@ package: build
+ 	    -C ${WORK_DIR}
+ 
+ clean:
+-	make -C /lib/modules/`uname -r`/build M=$(PWD) clean
++	make -C /lib/modules/$(KVERS)/build M=$(PWD) clean
+diff --git a/third_party/gtp_ovs/ovs/2.8.1/0003-Build-symbols-for-gtp-vport-linux-4.9-module-require.patch b/third_party/gtp_ovs/ovs/2.8.1/0003-Build-symbols-for-gtp-vport-linux-4.9-module-require.patch
+index 05ab8692f..23fecb40e 100644
+--- a/third_party/gtp_ovs/ovs/2.8.1/0003-Build-symbols-for-gtp-vport-linux-4.9-module-require.patch
++++ b/third_party/gtp_ovs/ovs/2.8.1/0003-Build-symbols-for-gtp-vport-linux-4.9-module-require.patch
+@@ -20,7 +20,7 @@ index c847d2853..90ecce19b 100755
+  
+ +
+ +	# make GTP flow based kernel patch
+-+	cd flow-based-gtp-linux-v4.9 && $(MAKE) build
+++	cd flow-based-gtp-linux-v4.9 && $(MAKE) build ARCH=$(ARCH) KVERS=$(KVERS) LDFLAGS=""
+ +	cp flow-based-gtp-linux-v4.9/Module.symvers debian/$(PACKAGE_DKMS)/usr/src/$(PACKAGE)-$(DEB_VERSION_UPSTREAM)/datapath/linux
+ +
+  	# Prepare dkms.conf from the dkms.conf.in template
+@@ -34,7 +34,7 @@ index b0c6cdcee..c0b29af86 100755
+  	dh_testroot
+  	dh_clean -k
+  	tar xzf openvswitch.tar.gz
+-+	cd flow-based-gtp-linux-v4.9 && $(MAKE) package
+++	cd flow-based-gtp-linux-v4.9 && $(MAKE) package ARCH=$(ARCH) KVERS=$(KVERS)
+ +	mv flow-based-gtp-linux-v4.9/*.deb $(DEB_DESTDIR)
+ +	cp flow-based-gtp-linux-v4.9/Module.symvers openvswitch/datapath/linux
+  	cd openvswitch && ./configure --with-linux=$(KSRC) $(DATAPATH_CONFIGURE_OPTS)

@@ -1,0 +1,78 @@
+diff --git a/lte/gateway/release/build-magma.sh b/lte/gateway/release/build-magma.sh
+index 2d6e0b028..9a5d5ba0b 100755
+--- a/lte/gateway/release/build-magma.sh
++++ b/lte/gateway/release/build-magma.sh
+@@ -24,6 +24,7 @@ BUILD_TYPE=Debug
+ COMMIT_HASH=""  # hash of top magma commit (hg log $MAGMA_PATH)
+ CERT_FILE="$MAGMA_ROOT/.cache/test_certs/rootCA.pem"
+ CONTROL_PROXY_FILE="$MAGMA_ROOT/lte/gateway/configs/control_proxy.yml"
++ARCH=amd64
+ 
+ while [[ $# -gt 0 ]]
+ do
+@@ -49,11 +50,16 @@ case $key in
+     CONTROL_PROXY_FILE="$2"
+     shift
+     ;;
++    -a|--arch)
++    ARCH="$2"
++    shift
++    ;;
+     *)
+     echo "Error: unknown cmdline option:" $key
+     echo "Usage: $0 [-v|--version V] [-i|--iteration I] [-h|--hash HASH]
+     [-t|--type Debug|RelWithDebInfo] [-c|--cert <path to cert .pem file>]
+-    [-p|--proxy <path to control_proxy config .yml file]>"
++    [-p|--proxy <path to control_proxy config .yml file]>
++    [-a|--arch arm64|amd64]"
+     exit 1
+     ;;
+ esac
+@@ -75,7 +81,6 @@ esac
+ 
+ # Default options
+ BUILD_DATE=`date -u +"%Y%m%d%H%M%S"`
+-ARCH=amd64
+ PKGFMT=deb
+ PKGNAME=magma
+ 
+@@ -244,6 +249,8 @@ fi
+ 
+ SERVICE_DIR="/etc/systemd/system/"
+ ANSIBLE_FILES="${MAGMA_ROOT}/lte/gateway/deploy/roles/magma/files"
++SYSTEMD_SOURCE_LTE=$MAGMA_ROOT/lte/gateway/deploy/roles/magma/files/systemd
++SYSTEMD_SOURCE_ORC8R=$MAGMA_ROOT/orc8r/tools/ansible/roles/gateway_services/files
+ 
+ BUILDCMD="fpm \
+ -s dir \
+@@ -264,18 +271,18 @@ ${SYSTEM_DEPS} \
+ ${OAI_BUILD}/oai_mme/mme=/usr/local/bin/ \
+ ${SCTPD_BUILD}/sctpd=/usr/local/bin/ \
+ ${SESSIOND_BUILD}/sessiond=/usr/local/bin/ \
+-$(glob_files "${SERVICE_DIR}/magma@.service" /etc/systemd/system/magma@.service) \
+-$(glob_files "${SERVICE_DIR}/magma@control_proxy.service" /etc/systemd/system/magma@control_proxy.service) \
+-$(glob_files "${SERVICE_DIR}/magma@magmad.service" /etc/systemd/system/magma@magmad.service) \
+-$(glob_files "${SERVICE_DIR}/magma@mme.service" /etc/systemd/system/magma@mme.service) \
+-$(glob_files "${SERVICE_DIR}/magma@sctpd.service" /etc/systemd/system/magma@sctpd.service) \
+-$(glob_files "${SERVICE_DIR}/magma@sessiond.service" /etc/systemd/system/magma@sessiond.service) \
+-$(glob_files "${SERVICE_DIR}/magma@mobilityd.service" /etc/systemd/system/magma@mobilityd.service) \
+-$(glob_files "${SERVICE_DIR}/magma@pipelined.service" /etc/systemd/system/magma@pipelined.service) \
+-$(glob_files "${SERVICE_DIR}/magma@redirectd.service" /etc/systemd/system/magma@redirectd.service) \
+-$(glob_files "${SERVICE_DIR}/magma@dnsd.service" /etc/systemd/system/magma@dnsd.service) \
+-$(glob_files "${SERVICE_DIR}/magma@lighttpd.service" /etc/systemd/system/magma@lighttpd.service) \
+-$(glob_files "${SERVICE_DIR}/magma@redis.service" /etc/systemd/system/magma@redis.service) \
++$(glob_files "${SYSTEMD_SOURCE_ORC8R}/magma.service" /etc/systemd/system/magma@magmad.service) \
++$(glob_files "${SYSTEMD_SOURCE_ORC8R}/magma_control_proxy.service" /etc/systemd/system/magma@control_proxy.service) \
++$(glob_files "${SYSTEMD_SOURCE_LTE}/magma_magmad.service" /etc/systemd/system/magma@magmad.service) \
++$(glob_files "${SYSTEMD_SOURCE_LTE}/magma_mme.service" /etc/systemd/system/magma@mme.service) \
++$(glob_files "${SYSTEMD_SOURCE_LTE}/magma_sctpd.service" /etc/systemd/system/magma@sctpd.service) \
++$(glob_files "${SYSTEMD_SOURCE_LTE}/magma_sessiond.service" /etc/systemd/system/magma@sessiond.service) \
++$(glob_files "${SYSTEMD_SOURCE_LTE}/magma_mobilityd.service" /etc/systemd/system/magma@mobilityd.service) \
++$(glob_files "${SYSTEMD_SOURCE_LTE}/magma_pipelined.service" /etc/systemd/system/magma@pipelined.service) \
++$(glob_files "${SYSTEMD_SOURCE_LTE}/magma_redirectd.service" /etc/systemd/system/magma@redirectd.service) \
++$(glob_files "${SYSTEMD_SOURCE_LTE}/magma_dnsd.service" /etc/systemd/system/magma@dnsd.service) \
++$(glob_files "${SYSTEMD_SOURCE_LTE}/magma_lighttpd.service" /etc/systemd/system/magma@lighttpd.service) \
++$(glob_files "${SYSTEMD_SOURCE_LTE}/magma_redis.service" /etc/systemd/system/magma@redis.service) \
+ ${CERT_FILE}=/var/opt/magma/certs/rootCA.pem \
+ $(glob_files "${MAGMA_ROOT}/lte/gateway/configs/!(control_proxy.yml|pipelined.yml|sessiond.yml)" /etc/magma/) \
+ $(glob_files "${MAGMA_ROOT}/lte/gateway/configs/pipelined.yml_prod" /etc/magma/pipelined.yml) \
