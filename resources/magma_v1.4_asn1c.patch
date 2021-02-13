@@ -1,0 +1,13 @@
+diff --git a/third_party/build/bin/asn1c_build.sh b/third_party/build/bin/asn1c_build.sh
+index 650942a3e..961b5fe4b 100755
+--- a/third_party/build/bin/asn1c_build.sh
++++ b/third_party/build/bin/asn1c_build.sh
+@@ -38,7 +38,7 @@ if_subcommand_exec
+ 
+ function configureopts() {
+     if [ "${ARCH}" = "arm64" ]; then
+-        echo --build=arm-linux-gnu
++        echo --disable-test-asan
+     else
+         echo -n
+     fi

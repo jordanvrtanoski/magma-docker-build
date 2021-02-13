@@ -1,0 +1,13 @@
+diff --git a/HISTORY.rst b/HISTORY.rst
+index 37b2d9c..a9bb1ec 100644
+--- a/HISTORY.rst
++++ b/HISTORY.rst
+@@ -27,7 +27,7 @@ Release History
+ - HPACK now tolerates receiving multiple header table size changes in sequence,
+   rather than only one.
+ - HPACK now forbids header table size changes anywhere but first in a header
+-  block, as required by RFC 7541 <C2><A7> 4.2.
++  block, as required by RFC 7541 4.2.
+ - Other miscellaneous performance improvements.
+
+ 2.3.0 (2016-08-04)

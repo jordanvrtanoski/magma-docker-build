@@ -1,0 +1,29 @@
+diff --git a/lte/gateway/release/Makefile b/lte/gateway/release/Makefile
+index bf5e3917b..76157cef1 100644
+--- a/lte/gateway/release/Makefile
++++ b/lte/gateway/release/Makefile
+@@ -10,9 +10,9 @@
+ #  See the License for the specific language governing permissions and
+ #  limitations under the License.
+ ################################################################################
+-MAGMA_ROOT = ~/magma
++#MAGMA_ROOT = ~/magma
+ PY_LTE     = $(MAGMA_ROOT)/lte/gateway/python
+ PY_ORC8R   = $(MAGMA_ROOT)/orc8r/gateway/python
+
+ magma.lockfile: $(PY_LTE)/setup.py $(PY_ORC8R)/setup.py
+-       ./pydep finddep --install-from-official -l ./magma.lockfile $(PY_ORC8R)/setup.py $(PY_LTE)/setup.py
++       ./pydep finddep --install-from-repo -l ./magma.lockfile $(PY_ORC8R)/setup.py $(PY_LTE)/setup.py
+diff --git a/lte/gateway/release/build-magma.sh b/lte/gateway/release/build-magma.sh
+index 966b9e2f7..94af0612f 100755
+--- a/lte/gateway/release/build-magma.sh
++++ b/lte/gateway/release/build-magma.sh
+@@ -81,7 +81,7 @@ esac
+
+ # Default options
+ BUILD_DATE=`date -u +"%Y%m%d%H%M%S"`
+-ARCH=amd64
++#ARCH=amd64
+ PKGFMT=deb
+ PKGNAME=magma
+ SCTPD_PKGNAME=magma-sctpd

@@ -1,5 +1,5 @@
 # Build Magma for aarch64
-docker build -t arm64v8/debian_magma -f arm64/magma.Dockerfile .
+docker build -t arm64v8/debian_magma -f arm64/magma.v1.0.1.Dockerfile .
 docker run -d --rm --name build_env arm64v8/debian_magma /bin/bash -c "mkdir -p /agw && find / -type f -not -path \"/agw/*\" -name *\.deb -exec cp {} /agw/ \; && sleep 600"
 sleep 60
 docker cp build_env:/agw packages/arm64/
