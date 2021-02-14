@@ -105,14 +105,18 @@ ENV SERVICE_DIR=/magma/lte/gateway/deploy/roles/magma/files/systemd/
 
 COPY resources/rootCA.pem /rootCA.pem
 COPY resources/magma_v1.4_build.patch /magma_v1.4_build.patch
+COPY resources/magma_v1.4_pydep.patch /magma_v1.4_pydep.patch
 
 RUN cd /magma && \
-    git apply /magma_v1.4_build.patch
+    git apply /magma_v1.4_build.patch && \
+    git apply /magma_v1.4_pydep.patch
 
 ## Move the missing service files in packaging area. TODO: Remove this once the files are part of the master
 RUN cp $MAGMA_ROOT/orc8r/tools/ansible/roles/gateway_services/files/magma.service $SERVICE_DIR/magma.service && \
     cp $MAGMA_ROOT/orc8r/tools/ansible/roles/fluent_bit/files/magma_td-agent-bit.service $SERVICE_DIR/magma_td-agent-bit.service && \
     cp $MAGMA_ROOT/orc8r/tools/ansible/roles/gateway_services/files/magma_control_proxy.service $SERVICE_DIR/magma_control_proxy.service
+
+RUN apt-get install -y python3-aioeventlet python3-aiodns python3-aiohttp python3-jsonpickle
 
 RUN cd /magma/lte/gateway/release/ && \
     ./build-magma.sh -c /rootCA.pem -h `git rev-parse --short HEAD`
