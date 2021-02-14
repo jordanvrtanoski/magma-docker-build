@@ -19,6 +19,7 @@ ENV ARCH=arm64
 ENV MAGMA_ROOT=/magma
 
 COPY resources/magma_v1.4_asn1c.patch /magma_v1.4_asn1c.patch
+COPY resources/magma_v1.4_freediameter.patch /magma_v1.4_freediameter.patch
 
 RUN cd / && \
     git clone https://github.com/magma/magma.git && \
@@ -69,10 +70,15 @@ RUN cd /magma/third_party/build/bin/ && \
 RUN apt install -y libgcrypt-dev libbison-dev flex bison libidn11-dev libtins-dev libmnl-dev libpcap-dev
 
 RUN cd /magma/third_party/build/bin/ && \
+    git apply /magma_v1.4_freediameter.patch && \
     ./freediameter_build.sh && \
-    dpkg -i oai-freediameter_0.0.1-1_arm64.deb
+    dpkg -i oai-freediameter_1.2.0-1_arm64.deb
 
+## Move libraries to the package collection area
+RUN mkdir -p /packages && \
+    mv /magma/third_party/build/bin/*.deb /packages
 
+# Prepare working folders
 RUN mkdir /tmp/go && \
     mkdir /tmp/go/root && \
     mkdir /tmp/go/work && \
@@ -121,6 +127,8 @@ RUN apt-get install -y python3-aioeventlet python3-aiodns python3-aiohttp python
 RUN cd /magma/lte/gateway/release/ && \
     ./build-magma.sh -c /rootCA.pem -h `git rev-parse --short HEAD`
 
-RUN mkdir /packages && \
-    cp /magma/lte/gateway/release/*.deb /packages
+RUN cd /magma/lte/gateway/release/ && \
+    make debian.python3
+
+RUN mv /magma/lte/gateway/release/*.deb /packages
 

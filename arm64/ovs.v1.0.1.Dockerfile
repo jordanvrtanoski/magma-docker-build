@@ -17,4 +17,6 @@ RUN cd magma && \
     cd lte/gateway/release/ && \
     MAGMA_ROOT=/magma KVERS="4.9.0-9-arm64" ARCH="arm64" bash build-ovs.sh
 
-
+# Move packages to collection folder
+RUN mkdir -p /packages && \
+    mv /root/build-ovs/*.deb /packages
