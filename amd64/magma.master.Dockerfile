@@ -1,4 +1,4 @@
-FROM arm64v8/debian:9.11
+FROM debian:9.11
 
 RUN apt update && \
     apt upgrade -y && \
@@ -17,7 +17,7 @@ RUN gem install fpm
 RUN apt install -y  python3-apt python3-pkg-resources python3-requests python3-pip virtualenvwrapper
 RUN /bin/bash -c "source /usr/share/virtualenvwrapper/virtualenvwrapper.sh && mkvirtualenv -p /usr/bin/python3 pydep && deactivate"
 
-ENV ARCH=arm64
+ENV ARCH=amd64
 ENV MAGMA_ROOT=/magma
 ENV LIB_DEB=$MAGMA_ROOT/third_party/build/bin
 

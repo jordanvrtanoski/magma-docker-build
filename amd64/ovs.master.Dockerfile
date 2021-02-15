@@ -1,8 +1,8 @@
-FROM arm64v8/debian:9.11
+FROM debian:9.11
 
 RUN echo "deb http://snapshot.debian.org/archive/debian/20190801T025637Z stretch main non-free contrib" >> /etc/apt/sources.list
 
-ENV ARCH=arm64
+ENV ARCH=amd64
 ENV KVERS="4.9.0-9-$ARCH"
 ENV MAGMA_ROOT=/magma
 
