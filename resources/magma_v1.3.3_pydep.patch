@@ -1,0 +1,57 @@
+diff --git a/lte/gateway/release/Makefile b/lte/gateway/release/Makefile
+index da4b443fd..f933d2012 100644
+--- a/lte/gateway/release/Makefile
++++ b/lte/gateway/release/Makefile
+@@ -5,9 +5,50 @@
+ # This source code is licensed under the BSD-style license found in the
+ # LICENSE file in the root directory of this source tree.
+ ################################################################################
+-MAGMA_ROOT = ~/magma
++#MAGMA_ROOT = ~/magma
+ PY_LTE     = $(MAGMA_ROOT)/lte/gateway/python
+ PY_ORC8R   = $(MAGMA_ROOT)/orc8r/gateway/python
+ 
+ magma.lockfile: $(PY_LTE)/setup.py $(PY_ORC8R)/setup.py
+-	./pydep finddep --install-from-official -l ./magma.lockfile $(PY_ORC8R)/setup.py $(PY_LTE)/setup.py
++	./pydep finddep --pypi -l ./magma.lockfile $(PY_ORC8R)/setup.py $(PY_LTE)/setup.py
++
++debian.python3: package.list python3-hpack python3-pylint python3-lxml python3-pycrypto
++
++package.list: $(PY_LTE)/setup.py $(PY_ORC8R)/setup.py
++	./pydep finddep -b --pypi -l ./magma.lockfile $(PY_ORC8R)/setup.py $(PY_LTE)/setup.py
++
++python3-hpack:
++	mkdir -p /tmp/python3/
++	cd /tmp/python3; \
++	git clone https://github.com/python-hyper/hpack.git; \
++	cd hpack; \
++	git checkout v3.0.0
++	for i in `find /tmp/python3/hpack -type f` ; do LC_ALL=C tr -dc '\0-\177' <$$i >$$i.tmp ; mv $$i.tmp $$i ; done;
++	fpm -s python -t deb --no-python-dependencies --python-package-name-prefix=python3 --python-bin=python3 -n python3-hpack /tmp/python3/hpack
++
++python3-pylint:
++	mkdir -p /tmp/python3/
++	cd /tmp/python3; \
++	git clone https://github.com/PyCQA/pylint.git; \
++	cd pylint; \
++	git checkout pylint-2.6.0
++	for i in `find /tmp/python3/pylint -type f` ; do LC_ALL=C tr -dc '\0-\177' <$$i >$$i.tmp ; mv $$i.tmp $$i ; done;
++	fpm -s python -t deb --no-python-dependencies --python-package-name-prefix=python3 --python-bin=python3 -n python3-pylint /tmp/python3/pylint
++
++python3-lxml:
++	apt-get -y install libxml2-dev libxslt-dev
++	apt-get -y install ./python3-cython_0.29.1_$(ARCH).deb
++	mkdir -p /tmp/python3/
++	cd /tmp/python3; \
++	git clone https://github.com/lxml/lxml.git;\
++	cd lxml; \
++	git checkout lxml-4.6.2
++	fpm -s python -t deb --no-python-dependencies --python-package-name-prefix=python3 --python-bin=python3 -n python3-lxml /tmp/python3/lxml
++
++python3-pycrypto:
++	mkdir -p /tmp/python3/
++	cd /tmp/python3/; \
++	git clone https://github.com/pycrypto/pycrypto.git; \
++	cd pycrypto; \
++	git checkout v2.6.1
++	fpm -s python -t deb --no-python-dependencies --python-package-name-prefix=python3 --python-bin=python3 -n python3-pycrypto /tmp/python3/pycrypto

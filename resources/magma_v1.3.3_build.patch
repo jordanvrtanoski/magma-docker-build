@@ -1,0 +1,89 @@
+diff --git a/lte/gateway/release/build-magma.sh b/lte/gateway/release/build-magma.sh
+index 66b46df3f..4e0ea026c 100755
+--- a/lte/gateway/release/build-magma.sh
++++ b/lte/gateway/release/build-magma.sh
+@@ -81,9 +81,15 @@ esac
+ 
+ # Default options
+ BUILD_DATE=`date -u +"%Y%m%d%H%M%S"`
+-ARCH=amd64
+-PKGFMT=deb
+-PKGNAME=magma
++if [[ -z "${ARCH}" ]]; then
++    ARCH=amd64
++fi
++if [[ -z "${PKGFMT}" ]]; then
++    PKGFMT=deb
++fi
++if [[ -z "${PKGNAME}" ]]; then
++    PKGNAME=magma
++fi
+ SCTPD_PKGNAME=magma-sctpd
+ 
+ # Magma system dependencies: anything that we depend on at the top level, add
+@@ -138,7 +144,7 @@ OVS_DEPS=(
+     "openvswitch-switch >= 2.8.9"
+     "openvswitch-common >= 2.8.9"
+     "python-openvswitch >= 2.8.9"
+-    "openvswitch-datapath-module-4.9.0-9-amd64 >= 2.8.9"
++    "openvswitch-datapath-module-4.9.0-9-${ARCH} >= 2.8.9"
+     )
+ 
+ # generate string for FPM
+@@ -268,7 +274,9 @@ if [ -f ${BUILD_PATH} ]; then
+   rm ${BUILD_PATH}
+ fi
+ 
+-SERVICE_DIR="/etc/systemd/system/"
++if [[ -z "${SERVICE_DIR}" ]]; then
++   SERVICE_DIR="/etc/systemd/system/"
++fi
+ ANSIBLE_FILES="${MAGMA_ROOT}/lte/gateway/deploy/roles/magma/files"
+ 
+ SCTPD_VERSION_FILE=$(mktemp)
+@@ -318,18 +326,18 @@ ${SYSTEM_DEPS} \
+ ${OAI_BUILD}/oai_mme/mme=/usr/local/bin/ \
+ ${SESSIOND_BUILD}/sessiond=/usr/local/bin/ \
+ ${SCTPD_MIN_VERSION_FILE}=/usr/local/share/magma/sctpd_min_version \
+-$(glob_files "${SERVICE_DIR}/magma@.service" /etc/systemd/system/magma@.service) \
+-$(glob_files "${SERVICE_DIR}/magma@control_proxy.service" /etc/systemd/system/magma@control_proxy.service) \
+-$(glob_files "${SERVICE_DIR}/magma@magmad.service" /etc/systemd/system/magma@magmad.service) \
+-$(glob_files "${SERVICE_DIR}/magma@mme.service" /etc/systemd/system/magma@mme.service) \
+-$(glob_files "${SERVICE_DIR}/magma@sessiond.service" /etc/systemd/system/magma@sessiond.service) \
+-$(glob_files "${SERVICE_DIR}/magma@mobilityd.service" /etc/systemd/system/magma@mobilityd.service) \
+-$(glob_files "${SERVICE_DIR}/magma@pipelined.service" /etc/systemd/system/magma@pipelined.service) \
+-$(glob_files "${SERVICE_DIR}/magma@redirectd.service" /etc/systemd/system/magma@redirectd.service) \
+-$(glob_files "${SERVICE_DIR}/magma@dnsd.service" /etc/systemd/system/magma@dnsd.service) \
+-$(glob_files "${SERVICE_DIR}/magma@lighttpd.service" /etc/systemd/system/magma@lighttpd.service) \
+-$(glob_files "${SERVICE_DIR}/magma@redis.service" /etc/systemd/system/magma@redis.service) \
+-$(glob_files "${SERVICE_DIR}/magma@td-agent-bit.service" /etc/systemd/system/magma@td-agent-bit.service) \
++$(glob_files "${SERVICE_DIR}/magma.service" /etc/systemd/system/magma@.service) \
++$(glob_files "${SERVICE_DIR}/magma_control_proxy.service" /etc/systemd/system/magma@control_proxy.service) \
++$(glob_files "${SERVICE_DIR}/magma_magmad.service" /etc/systemd/system/magma@magmad.service) \
++$(glob_files "${SERVICE_DIR}/magma_mme.service" /etc/systemd/system/magma@mme.service) \
++$(glob_files "${SERVICE_DIR}/magma_sessiond.service" /etc/systemd/system/magma@sessiond.service) \
++$(glob_files "${SERVICE_DIR}/magma_mobilityd.service" /etc/systemd/system/magma@mobilityd.service) \
++$(glob_files "${SERVICE_DIR}/magma_pipelined.service" /etc/systemd/system/magma@pipelined.service) \
++$(glob_files "${SERVICE_DIR}/magma_redirectd.service" /etc/systemd/system/magma@redirectd.service) \
++$(glob_files "${SERVICE_DIR}/magma_dnsd.service" /etc/systemd/system/magma@dnsd.service) \
++$(glob_files "${SERVICE_DIR}/magma_lighttpd.service" /etc/systemd/system/magma@lighttpd.service) \
++$(glob_files "${SERVICE_DIR}/magma_redis.service" /etc/systemd/system/magma@redis.service) \
++$(glob_files "${SERVICE_DIR}/magma_td-agent-bit.service" /etc/systemd/system/magma@td-agent-bit.service) \
+ ${CERT_FILE}=/var/opt/magma/certs/rootCA.pem \
+ $(glob_files "${MAGMA_ROOT}/lte/gateway/configs/!(control_proxy.yml|pipelined.yml|sessiond.yml)" /etc/magma/) \
+ $(glob_files "${MAGMA_ROOT}/lte/gateway/configs/pipelined.yml_prod" /etc/magma/pipelined.yml) \
+@@ -357,8 +365,10 @@ eval "$BUILDCMD"
+ cd "${MAGMA_ROOT}"
+ OVS_DIFF_LINES=$(git diff master -- third_party/gtp_ovs/ lte/gateway/release/build-ovs.sh | wc -l | tr -dc 0-9)
+ 
+-# if env var FORCE_OVS_BUILD is non-empty or there is are changes to openvswitch-related files build openvswitch
+-if [[ x"${FORCE_OVS_BUILD}" != "x" || x"${OVS_DIFF_LINES}" != x0 ]]; then
+-    cd "${PWD}"
+-    "${SCRIPT_DIR}"/build-ovs.sh "${OUTPUT_DIR}"
++if [[ x"${DOCKER_BUILD}" == "x" ]]; then
++   # if env var FORCE_OVS_BUILD is non-empty or there is are changes to openvswitch-related files build openvswitch
++   if [[ x"${FORCE_OVS_BUILD}" != "x" || x"${OVS_DIFF_LINES}" != x0 ]]; then
++       cd "${PWD}"
++   "${SCRIPT_DIR}"/build-ovs.sh "${OUTPUT_DIR}"
++   fi
+ fi
