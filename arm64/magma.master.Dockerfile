@@ -100,6 +100,7 @@ RUN echo 'deb http://ftp.debian.org/debian stretch-backports main' | tee /etc/ap
 RUN wget https://oss.sonatype.org/content/repositories/releases/io/swagger/swagger-codegen-cli/2.4.18/swagger-codegen-cli-2.4.18.jar -O /tmp/java/swagger-codegen-cli-2.4.18.jar
 
 # Build environment  
+ENV DOCKER_BUILD="true"
 ENV SWAGGER_CODEGEN_JAR=/tmp/java/swagger-codegen-cli-2.4.18.jar
 ENV GOPATH=/tmp/go/work
 ENV GOPROXY=https://proxy.golang.org

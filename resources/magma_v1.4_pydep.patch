@@ -1,8 +1,8 @@
 diff --git a/lte/gateway/release/Makefile b/lte/gateway/release/Makefile
-index bf5e3917b..a126886dd 100644
+index bf5e3917b..86347c212 100644
 --- a/lte/gateway/release/Makefile
 +++ b/lte/gateway/release/Makefile
-@@ -10,9 +10,41 @@
+@@ -10,9 +10,49 @@
  #  See the License for the specific language governing permissions and
  #  limitations under the License.
  ################################################################################
@@ -15,25 +15,25 @@ index bf5e3917b..a126886dd 100644
 -	./pydep finddep --install-from-official -l ./magma.lockfile $(PY_ORC8R)/setup.py $(PY_LTE)/setup.py
 +	./pydep finddep --pypi -l ./magma.lockfile $(PY_ORC8R)/setup.py $(PY_LTE)/setup.py
 +
-+debian.python3: package.list python3-hpack python3-pylint python3-lxml
++debian.python3: package.list python3-hpack python3-pylint python3-lxml python3-pycrypto
 +package.list: $(PY_LTE)/setup.py $(PY_ORC8R)/setup.py
 +	./pydep finddep -b --pypi -l ./magma.lockfile $(PY_ORC8R)/setup.py $(PY_LTE)/setup.py
 +
 +python3-hpack:
 +	mkdir -p /tmp/python3/
 +	cd /tmp/python3; \
-+	git clone https://github.com/python-hyper/hpack.git; \
-+	cd hpack; \
-+	git checkout v3.0.0
++		git clone https://github.com/python-hyper/hpack.git; \
++		cd hpack; \
++		git checkout v3.0.0
 +	for i in `find /tmp/python3/hpack -type f` ; do LC_ALL=C tr -dc '\0-\177' <$$i >$$i.tmp ; mv $$i.tmp $$i ; done;
 +	fpm -s python -t deb --no-python-dependencies --python-package-name-prefix=python3 --python-bin=python3 -n python3-hpack /tmp/python3/hpack
 +
 +python3-pylint:
 +	mkdir -p /tmp/python3/
 +	cd /tmp/python3; \
-+	git clone https://github.com/PyCQA/pylint.git; \
-+	cd pylint; \
-+	git checkout pylint-2.6.0
++		git clone https://github.com/PyCQA/pylint.git; \
++		cd pylint; \
++		git checkout pylint-2.6.0
 +	for i in `find /tmp/python3/pylint -type f` ; do LC_ALL=C tr -dc '\0-\177' <$$i >$$i.tmp ; mv $$i.tmp $$i ; done;
 +	fpm -s python -t deb --no-python-dependencies --python-package-name-prefix=python3 --python-bin=python3 -n python3-pylint /tmp/python3/pylint
 +
@@ -42,7 +42,15 @@ index bf5e3917b..a126886dd 100644
 +	apt-get -y install ./python3-cython_0.29.1_$(ARCH).deb
 +	mkdir -p /tmp/python3/
 +	cd /tmp/python3; \
-+	git clone https://github.com/lxml/lxml.git;\
-+	cd lxml; \
-+	git checkout lxml-4.6.2
++		git clone https://github.com/lxml/lxml.git;\
++		cd lxml; \
++		git checkout lxml-4.6.2
 +	fpm -s python -t deb --no-python-dependencies --python-package-name-prefix=python3 --python-bin=python3 -n python3-lxml /tmp/python3/lxml
++
++python3-pycrypto:
++	mkdir -p /tmp/python3/
++	cd /tmp/python3/; \
++		git clone https://github.com/pycrypto/pycrypto.git; \
++		cd pycrypto; \
++		git checkout v2.6.1
++	fpm -s python -t deb --no-python-dependencies --python-package-name-prefix=python3 --python-bin=python3 -n python3-pycrypto /tmp/python3/pycrypto

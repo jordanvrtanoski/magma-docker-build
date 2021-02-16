@@ -1,5 +1,5 @@
 diff --git a/lte/gateway/release/build-magma.sh b/lte/gateway/release/build-magma.sh
-index 966b9e2f7..541a9f261 100755
+index 966b9e2f7..1bb0892dc 100755
 --- a/lte/gateway/release/build-magma.sh
 +++ b/lte/gateway/release/build-magma.sh
 @@ -81,10 +81,16 @@ esac
@@ -23,6 +23,15 @@ index 966b9e2f7..541a9f261 100755
  
  # Magma system dependencies: anything that we depend on at the top level, add
  # here.
+@@ -142,7 +148,7 @@ OVS_DEPS=(
+     "openvswitch-switch >= 2.8.9"
+     "openvswitch-common >= 2.8.9"
+     "python-openvswitch >= 2.8.9"
+-    "openvswitch-datapath-module-4.9.0-9-amd64 >= 2.8.9"
++    "openvswitch-datapath-module-4.9.0-9-$ARCH >= 2.8.9"
+     )
+ 
+ # generate string for FPM
 @@ -283,7 +289,9 @@ if [ -f ${BUILD_PATH} ]; then
    rm ${BUILD_PATH}
  fi
@@ -71,3 +80,16 @@ index 966b9e2f7..541a9f261 100755
  ${CERT_FILE}=/var/opt/magma/certs/rootCA.pem \
  $(glob_files "${MAGMA_ROOT}/lte/gateway/configs/!(control_proxy.yml|pipelined.yml|sessiond.yml|connectiond.yml)" /etc/magma/) \
  $(glob_files "${MAGMA_ROOT}/lte/gateway/configs/pipelined.yml_prod" /etc/magma/pipelined.yml) \
+@@ -381,7 +389,9 @@ cd "${MAGMA_ROOT}"
+ OVS_DIFF_LINES=$(git diff master -- third_party/gtp_ovs/ lte/gateway/release/build-ovs.sh | wc -l | tr -dc 0-9)
+ 
+ # if env var FORCE_OVS_BUILD is non-empty or there is are changes to openvswitch-related files build openvswitch
+-if [[ x"${FORCE_OVS_BUILD}" != "x" || x"${OVS_DIFF_LINES}" != x0 ]]; then
+-    cd "${PWD}"
+-    "${SCRIPT_DIR}"/build-ovs.sh "${OUTPUT_DIR}"
++if [[ x"${DOCKER_BUILD}" == "x" ]]; then
++   if [[ x"${FORCE_OVS_BUILD}" != "x" || x"${OVS_DIFF_LINES}" != x0 ]]; then
++       cd "${PWD}"
++       "${SCRIPT_DIR}"/build-ovs.sh "${OUTPUT_DIR}"
++   fi
+ fi
