@@ -1,0 +1,286 @@
+diff --git a/lte/gateway/c/oai/common/TLVDecoder.h b/lte/gateway/c/oai/common/TLVDecoder.h
+index 75d10712f..591a147bf 100644
+--- a/lte/gateway/c/oai/common/TLVDecoder.h
++++ b/lte/gateway/c/oai/common/TLVDecoder.h
+@@ -30,6 +30,8 @@
+ #include "log.h"
+ #include "bstrlib.h"
+ 
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
++
+ #define IES_DECODE_U8(bUFFER, dECODED, vALUE)                                  \
+   DECODE_U8(bUFFER + dECODED, vALUE, dECODED)
+ 
+diff --git a/lte/gateway/c/oai/common/state_converter.cpp b/lte/gateway/c/oai/common/state_converter.cpp
+index 28b2ab368..455eabbf3 100644
+--- a/lte/gateway/c/oai/common/state_converter.cpp
++++ b/lte/gateway/c/oai/common/state_converter.cpp
+@@ -15,6 +15,7 @@
+  *      contact@openairinterface.org
+  */
+ 
++#include <functional>
+ #include "state_converter.h"
+ 
+ namespace magma {
+diff --git a/lte/gateway/c/oai/tasks/mme_app/mme_app_defs.h b/lte/gateway/c/oai/tasks/mme_app/mme_app_defs.h
+index d8b53ce1f..5d1cb6e15 100644
+--- a/lte/gateway/c/oai/tasks/mme_app/mme_app_defs.h
++++ b/lte/gateway/c/oai/tasks/mme_app/mme_app_defs.h
+@@ -26,6 +26,7 @@
+  * not be included within other layers.
+  * Use mme_app_extern.h to expose mme applicative layer procedures/data.
+  */
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
+ 
+ #ifndef FILE_MME_APP_DEFS_SEEN
+ #define FILE_MME_APP_DEFS_SEEN
+diff --git a/lte/gateway/c/oai/tasks/mme_app/mme_app_state_converter.cpp b/lte/gateway/c/oai/tasks/mme_app/mme_app_state_converter.cpp
+index b3bab313f..0176f687a 100644
+--- a/lte/gateway/c/oai/tasks/mme_app/mme_app_state_converter.cpp
++++ b/lte/gateway/c/oai/tasks/mme_app/mme_app_state_converter.cpp
+@@ -23,6 +23,7 @@ extern "C" {
+ #include "timer.h"
+ }
+ 
++#include <functional>
+ #include "mme_app_state_converter.h"
+ #include "nas_state_converter.h"
+ 
+diff --git a/lte/gateway/c/oai/tasks/nas/api/network/nas_message.c b/lte/gateway/c/oai/tasks/nas/api/network/nas_message.c
+index e52e4747e..ac26674d9 100644
+--- a/lte/gateway/c/oai/tasks/nas/api/network/nas_message.c
++++ b/lte/gateway/c/oai/tasks/nas/api/network/nas_message.c
+@@ -14,6 +14,7 @@
+  * For more information about the OpenAirInterface (OAI) Software Alliance:
+  *      contact@openairinterface.org
+  */
++#pragma GCC diagnostic ignored "-Wreturn-type"
+ 
+ #include <string.h>  // memcpy
+ #include <stdlib.h>  // free
+diff --git a/lte/gateway/c/oai/tasks/nas/emm/Attach.c b/lte/gateway/c/oai/tasks/nas/emm/Attach.c
+index 7a53cbb7a..039d36467 100644
+--- a/lte/gateway/c/oai/tasks/nas/emm/Attach.c
++++ b/lte/gateway/c/oai/tasks/nas/emm/Attach.c
+@@ -49,6 +49,8 @@
+ 
+ *****************************************************************************/
+ 
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
++
+ #include <stdint.h>
+ #include <stdbool.h>
+ #include <string.h>
+diff --git a/lte/gateway/c/oai/tasks/nas/emm/Authentication.c b/lte/gateway/c/oai/tasks/nas/emm/Authentication.c
+index d8607741a..cd9eb6008 100644
+--- a/lte/gateway/c/oai/tasks/nas/emm/Authentication.c
++++ b/lte/gateway/c/oai/tasks/nas/emm/Authentication.c
+@@ -14,6 +14,7 @@
+  * For more information about the OpenAirInterface (OAI) Software Alliance:
+  *      contact@openairinterface.org
+  */
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
+ 
+ #include <stdint.h>
+ #include <stdbool.h>
+diff --git a/lte/gateway/c/oai/tasks/nas/emm/Detach.c b/lte/gateway/c/oai/tasks/nas/emm/Detach.c
+index a643ec5dd..275c192f2 100644
+--- a/lte/gateway/c/oai/tasks/nas/emm/Detach.c
++++ b/lte/gateway/c/oai/tasks/nas/emm/Detach.c
+@@ -14,6 +14,7 @@
+  * For more information about the OpenAirInterface (OAI) Software Alliance:
+  *      contact@openairinterface.org
+  */
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
+ 
+ #include <stdint.h>
+ #include <stdbool.h>
+diff --git a/lte/gateway/c/oai/tasks/nas/emm/NasTransportHdl.c b/lte/gateway/c/oai/tasks/nas/emm/NasTransportHdl.c
+index 8565cbdfa..6298be754 100644
+--- a/lte/gateway/c/oai/tasks/nas/emm/NasTransportHdl.c
++++ b/lte/gateway/c/oai/tasks/nas/emm/NasTransportHdl.c
+@@ -14,6 +14,7 @@
+  * For more information about the OpenAirInterface (OAI) Software Alliance:
+  *      contact@openairinterface.org
+  */
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
+ 
+ #include <stdbool.h>
+ #include <string.h>
+diff --git a/lte/gateway/c/oai/tasks/nas/emm/SecurityModeControl.c b/lte/gateway/c/oai/tasks/nas/emm/SecurityModeControl.c
+index 6ae555752..ef00ff8b5 100644
+--- a/lte/gateway/c/oai/tasks/nas/emm/SecurityModeControl.c
++++ b/lte/gateway/c/oai/tasks/nas/emm/SecurityModeControl.c
+@@ -41,6 +41,7 @@
+         rent EPS security context already in use.
+ 
+ *****************************************************************************/
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
+ 
+ #include <stdint.h>
+ #include <stdbool.h>
+diff --git a/lte/gateway/c/oai/tasks/nas/emm/ServiceRequestHdl.c b/lte/gateway/c/oai/tasks/nas/emm/ServiceRequestHdl.c
+index e0e6e18a4..b3043c58c 100644
+--- a/lte/gateway/c/oai/tasks/nas/emm/ServiceRequestHdl.c
++++ b/lte/gateway/c/oai/tasks/nas/emm/ServiceRequestHdl.c
+@@ -14,6 +14,7 @@
+  * For more information about the OpenAirInterface (OAI) Software Alliance:
+  *      contact@openairinterface.org
+  */
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
+ 
+ #include <stdint.h>
+ #include <stdbool.h>
+diff --git a/lte/gateway/c/oai/tasks/nas/emm/TrackingAreaUpdate.c b/lte/gateway/c/oai/tasks/nas/emm/TrackingAreaUpdate.c
+index d4ca02728..fd13cf139 100644
+--- a/lte/gateway/c/oai/tasks/nas/emm/TrackingAreaUpdate.c
++++ b/lte/gateway/c/oai/tasks/nas/emm/TrackingAreaUpdate.c
+@@ -15,6 +15,8 @@
+  *      contact@openairinterface.org
+  */
+ 
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
++
+ #include <stdint.h>
+ #include <stdbool.h>
+ #include <stdlib.h>
+diff --git a/lte/gateway/c/oai/tasks/nas/emm/sap/emm_as.c b/lte/gateway/c/oai/tasks/nas/emm/sap/emm_as.c
+index c4aa907d4..aa68c1c8d 100644
+--- a/lte/gateway/c/oai/tasks/nas/emm/sap/emm_as.c
++++ b/lte/gateway/c/oai/tasks/nas/emm/sap/emm_as.c
+@@ -14,6 +14,7 @@
+  * For more information about the OpenAirInterface (OAI) Software Alliance:
+  *      contact@openairinterface.org
+  */
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
+ 
+ #include <stdint.h>
+ #include <stdbool.h>
+diff --git a/lte/gateway/c/oai/tasks/nas/emm/sap/emm_recv.c b/lte/gateway/c/oai/tasks/nas/emm/sap/emm_recv.c
+index cef8f60bf..a866f834c 100644
+--- a/lte/gateway/c/oai/tasks/nas/emm/sap/emm_recv.c
++++ b/lte/gateway/c/oai/tasks/nas/emm/sap/emm_recv.c
+@@ -15,6 +15,8 @@
+  *      contact@openairinterface.org
+  */
+ 
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
++
+ #include <stdint.h>
+ #include <stdbool.h>
+ #include <string.h>
+diff --git a/lte/gateway/c/oai/tasks/nas/nas_network.c b/lte/gateway/c/oai/tasks/nas/nas_network.c
+index d5e39f5f6..58fd466ff 100644
+--- a/lte/gateway/c/oai/tasks/nas/nas_network.c
++++ b/lte/gateway/c/oai/tasks/nas/nas_network.c
+@@ -14,6 +14,7 @@
+  * For more information about the OpenAirInterface (OAI) Software Alliance:
+  *      contact@openairinterface.org
+  */
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
+ 
+ #include "log.h"
+ #include "mme_config.h"
+diff --git a/lte/gateway/c/oai/tasks/nas/nas_proc.c b/lte/gateway/c/oai/tasks/nas/nas_proc.c
+index 404393f5b..6f0799d6c 100644
+--- a/lte/gateway/c/oai/tasks/nas/nas_proc.c
++++ b/lte/gateway/c/oai/tasks/nas/nas_proc.c
+@@ -31,6 +31,8 @@
+   Description NAS procedure call manager
+ 
+ *****************************************************************************/
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
++
+ #include <stdbool.h>
+ #include <stdint.h>
+ #include <string.h>
+diff --git a/lte/gateway/c/oai/tasks/nas/nas_state_converter.cpp b/lte/gateway/c/oai/tasks/nas/nas_state_converter.cpp
+index 114b4beac..1062d21f8 100644
+--- a/lte/gateway/c/oai/tasks/nas/nas_state_converter.cpp
++++ b/lte/gateway/c/oai/tasks/nas/nas_state_converter.cpp
+@@ -19,6 +19,7 @@ extern "C" {
+ #include "dynamic_memory_check.h"
+ }
+ 
++#include <functional>
+ #include "nas_state_converter.h"
+ //#include "spgw_state_converter.h"
+ 
+diff --git a/lte/gateway/c/oai/tasks/s1ap/s1ap_mme.c b/lte/gateway/c/oai/tasks/s1ap/s1ap_mme.c
+index 0ec353a8a..29bf4995d 100644
+--- a/lte/gateway/c/oai/tasks/s1ap/s1ap_mme.c
++++ b/lte/gateway/c/oai/tasks/s1ap/s1ap_mme.c
+@@ -22,6 +22,8 @@
+   \email: lionel.gauthier@eurecom.fr
+ */
+ 
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
++
+ #include "s1ap_mme.h"
+ 
+ #if HAVE_CONFIG_H
+diff --git a/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_handlers.c b/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_handlers.c
+index e1d6b3382..314131648 100644
+--- a/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_handlers.c
++++ b/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_handlers.c
+@@ -22,6 +22,8 @@
+   \email: lionel.gauthier@eurecom.fr
+ */
+ 
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
++
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <stdbool.h>
+diff --git a/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_itti_messaging.c b/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_itti_messaging.c
+index 96ce86556..2c5f6fa06 100644
+--- a/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_itti_messaging.c
++++ b/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_itti_messaging.c
+@@ -22,6 +22,8 @@
+   \email: lionel.gauthier@eurecom.fr
+ */
+ 
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
++
+ #include <stdio.h>
+ #include <stdbool.h>
+ #include <stdint.h>
+diff --git a/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_nas_procedures.c b/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_nas_procedures.c
+index 92ec81607..eb4dee2da 100644
+--- a/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_nas_procedures.c
++++ b/lte/gateway/c/oai/tasks/s1ap/s1ap_mme_nas_procedures.c
+@@ -22,6 +22,8 @@
+   \email: lionel.gauthier@eurecom.fr
+ */
+ 
++#pragma GCC diagnostic ignored "-Wduplicate-decl-specifier"
++
+ #include <stdio.h>
+ #include <stdint.h>
+ #include <stdlib.h>
+diff --git a/lte/gateway/c/oai/tasks/s1ap/s1ap_state_converter.cpp b/lte/gateway/c/oai/tasks/s1ap/s1ap_state_converter.cpp
+index 9535d4c30..3592c9263 100644
+--- a/lte/gateway/c/oai/tasks/s1ap/s1ap_state_converter.cpp
++++ b/lte/gateway/c/oai/tasks/s1ap/s1ap_state_converter.cpp
+@@ -15,6 +15,8 @@
+  * For more information about the OpenAirInterface (OAI) Software Alliance:
+  *      contact@openairinterface.org
+  */
++
++#include <functional>
+ #include "s1ap_state_converter.h"
+ 
+ using magma::lte::oai::EnbDescription;
+diff --git a/lte/gateway/c/oai/tasks/sgw/spgw_state_converter.cpp b/lte/gateway/c/oai/tasks/sgw/spgw_state_converter.cpp
+index 1295f9cb2..ac6a64237 100644
+--- a/lte/gateway/c/oai/tasks/sgw/spgw_state_converter.cpp
++++ b/lte/gateway/c/oai/tasks/sgw/spgw_state_converter.cpp
+@@ -19,6 +19,7 @@ extern "C" {
+ #include "dynamic_memory_check.h"
+ }
+ 
++#include <functional>
+ #include "spgw_state_converter.h"
+ 
+ using magma::lte::oai::CreateSessionMessage;
